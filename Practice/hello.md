@@ -15,3 +15,51 @@ int main(){
   return 0;
 }
 ```
+
+## namespace
+
+#### spacename이라는 개념이 있다. 호출에 관련한 내용이다.
+
+```
+#include <iostream>
+using namespace;
+
+int main() {
+  cout << "Hello, World!!" << endl;
+  return 0;
+}
+```
+
+## 이름 없는 이룸 공간
+
+```
+#include <iostream>
+
+namespace {
+// 이 함수는 이 파일 안에서만 사용 가능
+// static int OnlyInThisFile() 과 동일
+int OnlyInThisFile() {}
+
+// static int x 와 동일
+int only_in_this_file = 0;
+} // namespace
+
+int main() {
+  OnlyInThisFile();
+  only_in_this_file = 3;
+}
+
+---
+
+## 문제 2
+
+```
+#include <iostream>
+
+int main() {
+  std::cout << "Hi" << std:endl;
+            << "My name is "
+            << "Psi" << std:endl;
+  return 0;
+}
+```
