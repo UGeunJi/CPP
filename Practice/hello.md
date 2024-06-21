@@ -48,7 +48,7 @@ int main() {
   OnlyInThisFile();
   only_in_this_file = 3;
 }
-
+```
 ---
 
 ## 문제 2
