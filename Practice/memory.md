@@ -12,6 +12,7 @@ int main() {
 	delete p;
 	return 0;
 }
+```
 
 ```
 int* p = int new;
