@@ -194,8 +194,41 @@ Date day(2011, 3, 1);             // 암시적 방법 (implicit)
 Date day = Date(2012, 3, 1);      // 명시적 방법 (explicit)
 ```
 
+## Default Constructor
 
+#### 컴파일러가 자동으로 생성자를 추가해주는 생성자
 
+```
+#include<iostream>
 
+class Date {
+	int year_;
+	int month_;    // 1~12
+	int day_;      // 1~31
 
+	public:
+		void ShowDate();
+		
+	Date() {
+		year_ = 2012;
+		month_ = 7;
+		day_ = 12;
+	}
+};
 
+void Date::ShowDate() {
+	std::cout << "오늘은" << year_ << "년" << month_ << "월" << day_ << "일입니다" << std::endl;
+}
+
+int main() {
+	Date day = Date();
+	Date day2;
+
+	day.ShowDate();
+	day2.ShowDate();
+
+	return 0;
+}
+```
+
+![image](https://github.com/UGeunJi/CPP/assets/84713532/62614d3b-960e-4696-9ca4-3ccf226b31b0)
