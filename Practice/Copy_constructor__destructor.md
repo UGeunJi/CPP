@@ -312,15 +312,203 @@ int main() {
 #### 실행결과가 위와 같은데, 함수 a가 먼저 실행되고 b에 대한 함수가 실행되었고, b에 대한 함수가 모두 마무리 되고, a에 대한 함수가 마무리 되었기 떄문이다.
 #### main function start -> simple_function start -> simple_function end -> main function end
 
-~ page 98
+---
 
+<br>
 
+## Copy Constructor
 
+#### 하나하나 일일히 생성자로 생성할 수도 있지만, 1개만 생성해놓고 그 한 개로 나머지를 '복사 생성' 할 수도 있다.
 
+```
+// 포토캐논
 
+#include <string.h>
+#include <iostream>
 
+class Photon_Cannon {
+    int hp, shield;
+    int coord_x, coord_y;
+    int damage;
 
+    public:
+        Photon_Cannon(int x, int y);
+        Photon_Cannon(const Photon_Cannon& pc);
 
+        void show_status();
+};
 
+Photon_Cannon::Photon_Cannon(const Photon_Cannon& pc) {
+    std::cout << "복사 생성자 호출!" << std::endl;
+    hp = pc.hp;
+    shield = pc.shield;
+    coord_x = pc.coord_x;
+    coord_y = pc.coord_y;
+    damage = pc.damage;
+}
 
+Photon_Cannon::Photon_Cannon(int x, int y) {
+    std::cout << "생성자 호출!" << std::endl;
+    hp = shield = 100;
+    coord_x = x;
+    coord_y = y;
+    damage = 20;
+}
 
+void Photon_Cannon::show_status() {
+    std::cout << "Photon Cannon " << std::endl;
+    std::cout << " Location: (" << coord_x << " , " << coord_y << " ) " << std::endl;
+    std::cout << " HP: " << hp << std::endl;
+}
+
+int main() {
+    Photon_Cannon pc1(3, 3);
+    Photon_Cannon pc2(pc1);
+    Photon_Cannon pc3 = pc2;
+
+    pc1.show_status();
+    pc2.show_status();
+    pc3.show_status();
+}
+```
+
+## Deep Copy / Shallow Copy
+
+```
+// 포토캐논
+
+#include <string.h>
+#include <iostream>
+
+class Photon_Cannon {
+    int hp, shield;
+    int coord_x, coord_y;
+    int damage;
+
+    char *name;
+
+    public:
+        Photon_Cannon(int x, int y);
+        Photon_Cannon(int x, int y, const char *cannon_name);
+        ~Photon_Cannon();
+
+        void show_status();
+};
+
+Photon_Cannon::Photon_Cannon(int x, int y) {
+    hp = shield = 100;
+    coord_x = x;
+    coord_y = y;
+    damage = 20;
+
+    name = NULL;
+}
+
+Photon_Cannon::Photon_Cannon(int x, int y, const char *cannon_name) {
+    hp = shield = 100;
+    coord_x = x;
+    coord_y = y;
+    damage = 20;
+
+    name = new char[strlen(cannon_name) + 1];
+    strcpy(name, cannon_name);
+}
+
+Photon_Cannon::~Photon_Cannon() {
+    if (name) delete[] name;
+}
+
+void Photon_Cannon::show_status() {
+    std::cout << "Photon Cannon " << std::endl;
+    std::cout << " Location: (" << coord_x << " , " << coord_y << " ) " << std::endl;
+    std::cout << " HP: " << hp << std::endl;
+}
+
+int main() {
+    Photon_Cannon pc1(3, 3, "Cannon");
+    Photon_Cannon pc2(pc1);
+    Photon_Cannon pc3 = pc2;
+
+    pc1.show_status();
+    pc2.show_status();
+    pc3.show_status();
+}
+```
+
+#### 메모리도 따로 할당해야 하는데, 그렇지 않아서 첫 번째가 delete 되면 그 다음까지 연쇄적으로 delete 되어버림. -> shallow copy
+
+### Deep copy
+
+```
+// 포토캐논
+
+#include <string.h>
+#include <iostream>
+
+class Photon_Cannon {
+    int hp, shield;
+    int coord_x, coord_y;
+    int damage;
+
+    char *name;
+
+    public:
+        Photon_Cannon(int x, int y);
+        Photon_Cannon(int x, int y, const char *cannon_name);
+        Photon_Cannon(const Photon_Cannon &pc);
+        ~Photon_Cannon();
+
+        void show_status();
+};
+
+Photon_Cannon::Photon_Cannon(int x, int y) {
+    hp = shield = 100;
+    coord_x = x;
+    coord_y = y;
+    damage = 20;
+
+    name = NULL;
+}
+
+Photon_Cannon::Photon_Cannon(const Photon_Cannon &pc) {
+    std::cout << "복사 생성자 호출! " << std::endl;
+    hp = pc.hp;
+    shield = pc.shield;
+    coord_x = pc.coord_x;
+    coord_y = pc.coord_y;
+    damage = pc.damage;
+
+    name = new char[strlen(pc.name) + 1];
+    strcpy(name, pc.name);
+}
+
+Photon_Cannon::Photon_Cannon(int x, int y, const char *cannon_name) {
+    hp = shield = 100;
+    coord_x = x;
+    coord_y = y;
+    damage = 20;
+
+    name = new char[strlen(cannon_name) + 1];
+    strcpy(name, cannon_name);
+}
+
+Photon_Cannon::~Photon_Cannon() {
+    if (name) delete[] name;
+}
+
+void Photon_Cannon::show_status() {
+    std::cout << "Photon Cannon " << std::endl;
+    std::cout << " Location: (" << coord_x << " , " << coord_y << " ) " << std::endl;
+    std::cout << " HP: " << hp << std::endl;
+}
+
+int main() {
+    Photon_Cannon pc1(3, 3, "Cannon");
+    Photon_Cannon pc2(pc1);
+    Photon_Cannon pc3 = pc2;
+
+    pc1.show_status();
+    pc2.show_status();
+    pc3.show_status();
+}
+```
